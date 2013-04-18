@@ -1,0 +1,72 @@
+@(start: Html,goOn:Html) 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta name="generator" content="ReText 3.1.4">
+        <link rel="stylesheet" media="all" href="/assets/css/b.css" >
+        <style>
+            body{
+                background: url(/assets/img/bg.png) no-repeat;
+                background-position: left 40px;
+                background-attachment: fixed;
+                background-repeat: repeat;
+                background-repeat: no-repeat;
+                background-color: #C0DEED;
+                padding:10px;
+            }
+            li{
+                line-height: 30px;
+            }
+        </style>
+        <script src="/assets/js/j.js" type="text/JavaScript">
+        </script>
+        <title>
+            Translate
+        </title>
+    </head>
+    
+    <body class="container" style="width:1000px;">
+        <div class="navbar navbar-fixed-top">
+          <div class="navbar-inner">
+            <div class="container">
+              Translate
+            </div>
+          </div>
+        </div>
+        <div style="background:url(/assets/img/wash-white-30.png);padding:0 10px;">
+            <div class="container-fluid" style="background:#fff;padding:200px 20px;">
+              <div class="row-fluid" style="padding:70px;">
+                <div class="span5">
+                    <div class="well" style="padding:8px 0px;">
+                        <ul class="nav nav-list">
+                            <li class="nav-header">
+                                开始翻译
+                            </li>
+                            @start
+                            <li class="divider">
+                                <a href="#">&nbsp;</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="span5">
+                    <div class="well" style="padding:8px 0;">
+                        <ul class="nav nav-list">
+                            <li class="nav-header">
+                                完善翻译
+                            </li>
+                            @goOn
+                            <li class="divider">
+                                <a href="#">&nbsp;</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </body>
+
+</html>

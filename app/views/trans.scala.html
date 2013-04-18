@@ -1,0 +1,191 @@
+@(content: Html,trans:Html) 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+    
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta name="generator" content="ReText 3.1.4">
+        <link rel="stylesheet" media="all" href="/assets/css/b.css" >
+        <style>
+            body{
+                background: url(/assets/img/bg.png) no-repeat;
+                background-position: left 40px;
+                background-attachment: fixed;
+                background-repeat: repeat;
+                background-repeat: no-repeat;
+                background-color: #C0DEED;
+                padding:10px;
+            }
+            textarea,textarea:focus{ 
+            	margin:0; 
+            	padding:0;
+            	width: 100%; 
+            	overflow: hidden;
+            }
+            textarea.add,textarea.add:focus {
+              border:1px solid;
+              border-color: rgba(82, 168, 236, 0.8);
+              -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+              -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+              box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+              outline: 0;
+              outline: thin dotted \9;
+              height:150px;
+              /* IE6-9 */
+            }
+        </style>
+        <script src="/assets/js/j.js" type="text/JavaScript">
+        </script>
+		<script type="text/javascript">
+            var context = "";
+            var height = "";
+            var widht = "";
+            var strs = new Array();
+            var i = 0;
+            
+            /*
+            fun:翻译元素内的html
+            in:元素
+            out:无
+            在$("myDiv")内显示翻译内容
+            */
+            function trans(obj){
+                var addr = "http://fanyi.youdao.com/openapi.do?keyfrom=playframewrok&key=1708078032&type=data&doctype=jsonp&version=1.1&q=";
+                context = obj.html().replace("\n            ","").replace(new RegExp("\n            ","gm")," ");
+                $("#myDiv").html("");
+                strs=context.split(".");
+                for (var i=0;i<strs.length;i++){
+                    if(strs[i]!=null && strs[i]!=""){
+                        if(strs[i].length<50){
+                            i++;
+                            strs[i]=strs[i-1]+strs[i];
+                        }
+                        $.post(addr+strs[i],function(ret){
+                            $("#myDiv").append(ret.translation)
+                        }, "jsonp");
+                    }
+                }
+            }
+            $(document).ready(function() {
+                var marginTop=$("#en p:first").offset().top;
+
+
+                $("#cn p").live("click",function() {
+                    if(!$(this).children().is("textarea")){
+                        context = $(this).html().replace("\n            ","").replace(new RegExp("\n            ","gm")," ");
+                        height = $(this).height();
+                        width = $(this).width();
+                        $(this).html("<textarea class=\"edit\" title="+($(this).index("p"))+" >" + context + "</textarea>");
+                        $(this).children("textarea").height(height);
+                        $(this).children("textarea").focus();
+
+                        $("#en p:eq("+($(this).index("p"))+")").addClass("alert");
+                        $(document).scrollTop($("#en p:eq("+($(this).index("p"))+")").offset().top-marginTop);
+                        trans($("#en p:eq("+($(this).index("p"))+")"));
+                    }
+                });//单击译文显示可编辑文本框，相应原文高亮，并滚动到相应位置，显示译文
+                $("#en p").click(function() {
+                    trans($(this));
+                });//单击原文显示译文
+                $("#cn textarea.add").live("blur",function() {
+                    if(!$.trim($(this).val())==""){
+                        $("#en p.alert").removeClass("alert");
+                        content="<p>"+$(this).val()+"</p>\r\n";
+                        $(this).before(content);
+                        $.get("/Make/"+content);
+                        $(this).val("");
+                    }
+                });//增加文本框失去焦点则保存,原文高亮消失
+                $("#cn textarea.edit").live("blur",function() {
+                    if(!$.trim($(this).val())==""){
+                        $("#en p.alert").removeClass("alert");
+                        $(this).parent("p").html($(this).val());
+                        if($(this).val()!=context){
+                            content=$(this).val()
+                            $.get("/Change/"+$(this).attr("title")+"/"+content+"/"); 
+                        }
+                        $(this).val("");
+                    }
+                });//编辑文本框失去焦点则保存,原文高亮消失
+                $("#cn textarea.add").live("focus",function() {
+                    $("#en p:eq("+($("#cn p").size()-1)+")").addClass("alert");
+                    $(document).scrollTop($("#en p:eq("+($("#cn p").size()-1)+")").offset().top-marginTop);
+                    trans($("#en p:eq("+($("#cn p").size()-1)+")"));
+                });//单击增加的文本域相应原文高亮，滚动到相应位置，显示译文
+                $("#cn textarea").live("keypress",function() {
+                    if(event.which==13){
+                        content="<p>"+$(this).val()+"</p>\r\n";
+                        $(this).before(content);
+                        //$.ajax(content);
+                        $(this).val("");
+                        $(document).scrollTop($("#en p")[$("#cn p").size()-1].offsetTop-marginTop);
+                        $("#en p.alert").removeClass("alert");
+                        $("#en p:eq("+($("#cn p").size()-1)+")").addClass("alert");
+                        $("#en p:eq("+($("#cn p").size()-1)+")").attr("title","up");
+                        trans($("#en p:eq("+($("#cn p").size()-1)+")"));
+                    }
+                });
+                $(window).scroll(function(){
+                    $("#en p").each(function (){
+                        if($(this).offset().top-$(document).scrollTop()<0)
+                            $(this).attr("title","up");
+                        else
+                            $(this).removeAttr("title");
+                    });//如果外文的p滚动出上界，增加title=up属性
+                    if($("#cn p").size()>($("[title='up']").size()) && $("[title='up']").size()>0){
+                        $("#cn").scrollTop($("#en p")[$("[title='up']").size()-1].offsetTop-$("#en p:first").offset().top);
+                    }else if($("#cn p").size()<=($("[title='up']").size()) && $("#cn textarea.add").size()<1){
+                        $("#cn div").append("<textarea class='add'></textarea><p style='height:30px'></p>");
+                        $("#cn").scrollTop($("#en p")[$("[title='up']").size()-1].offsetTop-$("#en p:first").offset().top);
+                    }//译文和外文一起滚动,如果译文没有了，译文下面增加文本域
+                        
+                });
+            });
+        </script>
+        <title>
+            Translate
+        </title>
+    </head>
+    
+    <body class="container" style="width:1000px;">
+        <div class="navbar navbar-fixed-top">
+          <div class="navbar-inner">
+            <div class="container">
+              Translate
+            </div>
+          </div>
+        </div>
+        <div style="background:url(/assets/img/wash-white-30.png);padding:0 10px;">
+            <div style="position:fixed;width:980px;bottom:0;background:#f9f9f9;">
+            	<div class="alert alert-info"  style="min-height:20px;" id="myDiv">
+            		You dao~
+            	</div>
+                <div style="overflow: hidden;height:200px;padding:0 20px;" id="cn">
+                    <div>
+                        @trans
+                    </div>
+                </div>
+            </div>
+            <div id="en" style="margin-bottom:255px;background:#fff;padding:0 20px;">
+                <br><br>
+                @content
+                <p>
+                    <br/><br/><br/><br/><br/>
+                </p>
+                <p>
+                    <br/><br/><br/><br/><br/>
+                </p>
+                <p>
+                    <br/><br/><br/><br/><br/>
+                </p>
+                <p>
+                    <br/><br/><br/><br/><br/>
+                </p>
+                <p>
+                    <br/><br/><br/><br/><br/>
+                </p>
+            </div>
+        </div>
+    </body>
+
+</html>
