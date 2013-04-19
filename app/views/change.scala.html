@@ -40,6 +40,8 @@
                 display: block;
                 cursor: pointer;
                 vertical-align: middle;
+                float:left;
+                width:20px;
             }
         </style>
         <script src="/assets/js/j.js" type="text/JavaScript">
@@ -79,19 +81,24 @@
                 var addr = "";
 
                 $(".right").live("click",function(){
-                    var times=$(this).parent("tr").index("tr")-1;
+                    var times=$(this).parents("tr").index("tr")-1;
                     if(times==-1){
                         times=0;
-                        content=$(this).next("td.trans").html();
+                        content=$(this).parent("td").next("td.trans").html();
                     }
                     $("tr:gt("+times+")").each(function(){
                         contenttemp = $(this).children("td.trans").html();
                         $(this).children("td.trans").html(content);
                         content=contenttemp;
                     });
-                    $(this).next("td").html("<textarea class='add'></textarea>")
-                    trans($(this).prev("td"));
+                    $(this).parent("td").next("td").html("<textarea class='add'></textarea>")
+                    trans($(this).parent("td").prev("td"));
                 });//单击中间的合并按钮，相应右边译文新增一个编辑框
+
+                $(".copy").live("click",function(){
+                    content=$(this).parent("td").prev("td").html();
+                    $(this).parent("td").next("td.trans").html(content);
+                });//单击中间的复制按钮，相应左边的所有内容复制到右边
 
                 $(".del").live("click",function(){
                     addr = "/Del/"+$(this).parents("tr").index("tr")+"/"+title+"/";
@@ -110,7 +117,7 @@
                 $("textarea.add").live("blur",function() {
                     if(!$.trim($(this).val())==""){
                         content="<p>"+$(this).val()+"</p>\r\n";
-                        addr = "/insert/"+$(this).parents("tr").index("tr")+"/"+$(this).val().replace(new RegExp("#","gm"),"~~~")+"/"+title+"/"
+                        addr = "/insert/"+$(this).parents("tr").index("tr")+"/"+$(this).val().replace(new RegExp("#","gm"),"~~~").replace(new RegExp("<","gm"),"~lt~").replace(new RegExp(">","gm"),"~gt~").replace(new RegExp("/","gm"),"~line~")+"/"+title+"/"
                         $.get(addr,function(result){
                             if(result!="Success")
                                 $("#state").html("不能保存，出错了，不信你刷新一下～<a href='"+addr+"'>"+addr+"</a>"); 
@@ -136,7 +143,7 @@
                 $("textarea.edit").live("blur",function() {
                     if(!$.trim($(this).val())==""){
                         if($(this).val()!=context){
-                            content=$(this).val().replace(new RegExp("#","gm"),"~~~");
+                            content=$(this).val().replace(new RegExp("#","gm"),"~~~").replace(new RegExp("<","gm"),"~lt~").replace(new RegExp(">","gm"),"~gt~").replace(new RegExp("/","gm"),"~line~");
                             addr="/Change/"+$(this).parents("tr").index("tr")+"/"+content+"/"+title+"/";
 
                             $.get(addr,function(result){
@@ -154,7 +161,7 @@
                     if(event.which==13){
                         if(!$.trim($(this).val())==""){
                             if($(this).val()!=context){
-                                content=$(this).val().replace(new RegExp("#","gm"),"~~~");
+                                content=$(this).val().replace(new RegExp("#","gm"),"~~~").replace(new RegExp("<","gm"),"~lt~").replace(new RegExp(">","gm"),"~gt~").replace(new RegExp("/","gm"),"~line~");
                                 addr = "/Change/"+$(this).parent("p").parent("td").parent("tr").index("tr")+"/"+content+"/"+title+"/";
                                 $.get(addr,function(result){
                                     if(result!="Success")
@@ -171,7 +178,7 @@
                     if(event.which==13){
                         if(!$.trim($(this).val())==""){
                             content="<p>"+$(this).val()+"</p>\r\n";
-                            addr = "/insert/"+$(this).parents("tr").index("tr")+"/"+$(this).val().replace(new RegExp("#","gm"),"~~~")+"/"+title+"/"
+                            addr = "/insert/"+$(this).parents("tr").index("tr")+"/"+$(this).val().replace(new RegExp("#","gm"),"~~~").replace(new RegExp("<","gm"),"~lt~").replace(new RegExp(">","gm"),"~gt~").replace(new RegExp("/","gm"),"~line~")+"/"+title+"/"
                             $.get(addr,function(result){
                                 if(result!="Success")
                                     $("#state").html("不能保存，出错了，不信你刷新一下～<a href='"+addr+"'>"+addr+"</a>"); 

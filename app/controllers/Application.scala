@@ -95,7 +95,7 @@ object Application extends Controller {
       if(line.replaceAll("\\s*", "")!=""){
         html += "<tr><td width='40%'><p>"
         html += contents(i)
-        html += "</p></td><td width='5%' class='right'><span>➺</span></td><td class='trans' ><p>"
+        html += "</p></td><td width='5%'><span class='copy'>✍</span><span class='right'>➺</span></td><td class='trans' ><p>"
         html += line
         html += "</p></td><td width='5%' class='del'><span>✘</span></td></tr>"
         i+=1
@@ -105,7 +105,7 @@ object Application extends Controller {
       for(j <- i to (size-1)){
         html += "<tr><td width='40%'><p>"
         html += contents(i)
-        html += "</p></td><td width='5%' class='right'><span>➺</span></td><td class='trans' >"
+        html += "</p></td><td width='5%'><span class='copy'>✍</span><span class='right'>➺</span></td><td class='trans' >"
         html += "</td><td width='5%' class='del'><span>✘</span></td></tr>"
         i+=1
       }
@@ -137,11 +137,16 @@ object Application extends Controller {
     var i=0
 
     for (line <- Source.fromFile("public/trans/out/"+file+".md").getLines){
-      contents(i)=line
-      i+=1
+      if(line.replaceAll("\\s*", "")!=""){
+        contents(i)=line
+        i+=1
+      }
     }
-  
-    contents(id.toInt)=content.replaceAll("~~~","#")++"\r\n\r\n"+contents(id.toInt)
+
+    if(content.startsWith("*") && contents(id.toInt).startsWith("*"))
+      contents(id.toInt)=content.replaceAll("~~~","#").replaceAll("~lt~","<").replaceAll("~gt~",">").replaceAll("~line~","/")+"\r\n"+contents(id.toInt)
+    else
+      contents(id.toInt)=content.replaceAll("~~~","#").replaceAll("~lt~","<").replaceAll("~gt~",">").replaceAll("~line~","/")+"\r\n\r\n"+contents(id.toInt)
 
     if(new File("public/trans/out/"+file+".md").exists())
       new File("public/trans/out/"+file+".md").delete()
@@ -161,7 +166,7 @@ object Application extends Controller {
             output.write("\r\n")
             isList = false
           }
-          output.write(con+"\r\n");
+          output.write(con+"\r\n\r\n");
         }
       }
     }
@@ -175,8 +180,10 @@ object Application extends Controller {
     var i=0
 
     for (line <- Source.fromFile("public/trans/out/"+file+".md").getLines){
-      contents(i)=line
-      i+=1
+      if(line.replaceAll("\\s*", "")!=""){
+        contents(i)=line
+        i+=1
+      }
     }
 
     if(new File("public/trans/out/"+file+".md").exists())
@@ -221,7 +228,7 @@ object Application extends Controller {
       }
   	}
 	
-  	contents(id.toInt)=content.replaceAll("~~~","#")
+  	contents(id.toInt)=content.replaceAll("~~~","#").replaceAll("~lt~","<").replaceAll("~gt~",">").replaceAll("~line~","/")
 
   	if(new File("public/trans/out/"+file+".md").exists())
   		new File("public/trans/out/"+file+".md").delete()
@@ -241,7 +248,7 @@ object Application extends Controller {
             output.write("\r\n")
             isList = false
           }
-          output.write(con+"\r\n");
+          output.write(con+"\r\n\r\n");
         }
       }
         

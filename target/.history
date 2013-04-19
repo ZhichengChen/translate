@@ -33,3 +33,11 @@ compile
 run
 clean
 exit
+compile
+run
+exit
+run
+exit
+run
+run 8007
+exit
