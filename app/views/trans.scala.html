@@ -1,4 +1,4 @@
-@(content: Html,trans:Html) 
+@(content: Html,trans:Html,file:String) 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
     
@@ -42,6 +42,7 @@
             var widht = "";
             var strs = new Array();
             var i = 0;
+            var file = "@file" ;
             
             /*
             fun:翻译元素内的html
@@ -53,7 +54,7 @@
                 var addr = "http://fanyi.youdao.com/openapi.do?keyfrom=playframewrok&key=1708078032&type=data&doctype=jsonp&version=1.1&q=";
                 context = obj.html().replace("\n            ","").replace(new RegExp("\n            ","gm")," ");
                 $("#myDiv").html("");
-                strs=context.split(".");
+                strs=context.replace(/<[^>]+>/g," ").split(".");
                 for (var i=0;i<strs.length;i++){
                     if(strs[i]!=null && strs[i]!=""){
                         if(strs[i].length<50){
@@ -61,7 +62,7 @@
                             strs[i]=strs[i-1]+strs[i];
                         }
                         $.post(addr+strs[i],function(ret){
-                            $("#myDiv").append(ret.translation)
+                            $("#myDiv").append(ret.translation+"。")
                         }, "jsonp");
                     }
                 }
@@ -92,7 +93,7 @@
                         $("#en p.alert").removeClass("alert");
                         content="<p>"+$(this).val()+"</p>\r\n";
                         $(this).before(content);
-                        $.get("/Make/"+content);
+                        $.get("/Make/"+$(this).val().replace(new RegExp("#","gm"),"~~~").replace(new RegExp("<","gm"),"~lt~").replace(new RegExp(">","gm"),"~gt~").replace(new RegExp("/","gm"),"~line~")+"/"+file+"/");
                         $(this).val("");
                     }
                 });//增加文本框失去焦点则保存,原文高亮消失
@@ -102,7 +103,7 @@
                         $(this).parent("p").html($(this).val());
                         if($(this).val()!=context){
                             content=$(this).val()
-                            $.get("/Change/"+$(this).attr("title")+"/"+content+"/"); 
+                            $.get("/Change/"+$(this).attr("title").replace(new RegExp("#","gm"),"~~~").replace(new RegExp("<","gm"),"~lt~").replace(new RegExp(">","gm"),"~gt~").replace(new RegExp("/","gm"),"~line~")+"/"+content+"/"+file+"/"); 
                         }
                         $(this).val("");
                     }
@@ -116,7 +117,7 @@
                     if(event.which==13){
                         content="<p>"+$(this).val()+"</p>\r\n";
                         $(this).before(content);
-                        //$.ajax(content);
+                        $.get("/Make/"+$(this).val().replace(new RegExp("#","gm"),"~~~").replace(new RegExp("<","gm"),"~lt~").replace(new RegExp(">","gm"),"~gt~").replace(new RegExp("/","gm"),"~line~")+"/"+file+"/");
                         $(this).val("");
                         $(document).scrollTop($("#en p")[$("#cn p").size()-1].offsetTop-marginTop);
                         $("#en p.alert").removeClass("alert");
@@ -136,7 +137,8 @@
                         $("#cn").scrollTop($("#en p")[$("[title='up']").size()-1].offsetTop-$("#en p:first").offset().top);
                     }else if($("#cn p").size()<=($("[title='up']").size()) && $("#cn textarea.add").size()<1){
                         $("#cn div").append("<textarea class='add'></textarea><p style='height:30px'></p>");
-                        $("#cn").scrollTop($("#en p")[$("[title='up']").size()-1].offsetTop-$("#en p:first").offset().top);
+                        if($("[title='up']").size()>0)
+                            $("#cn").scrollTop($("#en p")[$("[title='up']").size()-1].offsetTop-$("#en p:first").offset().top);
                     }//译文和外文一起滚动,如果译文没有了，译文下面增加文本域
                         
                 });

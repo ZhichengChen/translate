@@ -41,3 +41,9 @@ exit
 run
 run 8007
 exit
+compile
+run
+compile
+run 80
+run 8080
+run

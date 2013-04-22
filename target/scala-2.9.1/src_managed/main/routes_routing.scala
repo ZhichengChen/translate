@@ -1,6 +1,6 @@
 // @SOURCE:/home/ze/git/translate/conf/routes
-// @HASH:4083842877cf59becb26135b7d5cb0f211834396
-// @DATE:Fri Apr 19 08:17:01 CST 2013
+// @HASH:116319315491324cfecea1365dde0c7056c1bc52
+// @DATE:Sat Apr 20 11:59:11 CST 2013
 
 import play.core._
 import play.core.Router._
@@ -31,7 +31,7 @@ val controllers_Application_insert3 = Route("GET", PathPattern(List(StaticPart("
                     
 
 // @LINE:10
-val controllers_Application_Make4 = Route("GET", PathPattern(List(StaticPart("/Make/"),DynamicPart("content", """[^/]+"""))))
+val controllers_Application_Make4 = Route("GET", PathPattern(List(StaticPart("/Make/"),DynamicPart("content", """[^/]+"""),StaticPart("/"),DynamicPart("title", """[^/]+"""),StaticPart("/"))))
                     
 
 // @LINE:11
@@ -45,7 +45,7 @@ val controllers_Application_del6 = Route("GET", PathPattern(List(StaticPart("/De
 // @LINE:15
 val controllers_Assets_at7 = Route("GET", PathPattern(List(StaticPart("/assets/"),DynamicPart("file", """.+"""))))
                     
-def documentation = List(("""GET""","""/""","""controllers.Application.index"""),("""GET""","""/change/$content<[^/]+>/""","""controllers.Application.change(content:String)"""),("""GET""","""/trans/$content<[^/]+>/""","""controllers.Application.trans(content:String)"""),("""GET""","""/insert/$id<[^/]+>/$content<[^/]+>/$title<[^/]+>/""","""controllers.Application.insert(id:String, content:String, title:String)"""),("""GET""","""/Make/$content<[^/]+>""","""controllers.Application.Make(content:String)"""),("""GET""","""/Change/$id<[^/]+>/$content<[^/]+>/$title<[^/]+>/""","""controllers.Application.Change(id:String, content:String, title:String)"""),("""GET""","""/Del/$id<[^/]+>/$title<[^/]+>/""","""controllers.Application.del(id:String, title:String)"""),("""GET""","""/assets/$file<.+>""","""controllers.Assets.at(path:String = "/public", file:String)"""))
+def documentation = List(("""GET""","""/""","""controllers.Application.index"""),("""GET""","""/change/$content<[^/]+>/""","""controllers.Application.change(content:String)"""),("""GET""","""/trans/$content<[^/]+>/""","""controllers.Application.trans(content:String)"""),("""GET""","""/insert/$id<[^/]+>/$content<[^/]+>/$title<[^/]+>/""","""controllers.Application.insert(id:String, content:String, title:String)"""),("""GET""","""/Make/$content<[^/]+>/$title<[^/]+>/""","""controllers.Application.Make(content:String, title:String)"""),("""GET""","""/Change/$id<[^/]+>/$content<[^/]+>/$title<[^/]+>/""","""controllers.Application.Change(id:String, content:String, title:String)"""),("""GET""","""/Del/$id<[^/]+>/$title<[^/]+>/""","""controllers.Application.del(id:String, title:String)"""),("""GET""","""/assets/$file<.+>""","""controllers.Assets.at(path:String = "/public", file:String)"""))
              
     
 def routes:PartialFunction[RequestHeader,Handler] = {        
@@ -84,8 +84,8 @@ case controllers_Application_insert3(params) => {
 
 // @LINE:10
 case controllers_Application_Make4(params) => {
-   call(params.fromPath[String]("content", None)) { (content) =>
-        invokeHandler(_root_.controllers.Application.Make(content), HandlerDef(this, "controllers.Application", "Make", Seq(classOf[String])))
+   call(params.fromPath[String]("content", None), params.fromPath[String]("title", None)) { (content, title) =>
+        invokeHandler(_root_.controllers.Application.Make(content, title), HandlerDef(this, "controllers.Application", "Make", Seq(classOf[String], classOf[String])))
    }
 }
                     

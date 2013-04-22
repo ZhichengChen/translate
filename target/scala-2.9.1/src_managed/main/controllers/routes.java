@@ -1,6 +1,6 @@
 // @SOURCE:/home/ze/git/translate/conf/routes
-// @HASH:4083842877cf59becb26135b7d5cb0f211834396
-// @DATE:Fri Apr 19 08:17:01 CST 2013
+// @HASH:116319315491324cfecea1365dde0c7056c1bc52
+// @DATE:Sat Apr 20 11:59:11 CST 2013
 
 package controllers;
 

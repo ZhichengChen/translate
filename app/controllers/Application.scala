@@ -123,12 +123,12 @@ object Application extends Controller {
                   new Html(markdown("public/trans/out/"+content+".md"))
                 else
                   new Html("")
-    Ok(views.html.trans(origin,trans))
+    Ok(views.html.trans(origin,trans,content))
   }
 
-  def Make(content:String) = Action {
-    val output:Output = scalax.io.Resource.fromFile("public/trans/out/"+content+".md")
-    output.write(content+"\r\n\r\n")
+  def Make(content:String,file:String) = Action {
+    val output:Output = scalax.io.Resource.fromFile("public/trans/out/"+file+".md")
+    output.write(content.replaceAll("~~~","#").replaceAll("~lt~","<").replaceAll("~gt~",">").replaceAll("~line~","/")+"\r\n\r\n")
     Ok("Success")
   }
 

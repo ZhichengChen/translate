@@ -1,6 +1,6 @@
 // @SOURCE:/home/ze/git/translate/conf/routes
-// @HASH:4083842877cf59becb26135b7d5cb0f211834396
-// @DATE:Fri Apr 19 08:17:01 CST 2013
+// @HASH:116319315491324cfecea1365dde0c7056c1bc52
+// @DATE:Sat Apr 20 11:59:11 CST 2013
 
 import play.core._
 import play.core.Router._
@@ -40,6 +40,12 @@ def Change(id:String, content:String, title:String) = {
 }
                                                         
  
+// @LINE:10
+def Make(content:String, title:String) = {
+   Call("GET", "/Make/" + implicitly[PathBindable[String]].unbind("content", content) + "/" + implicitly[PathBindable[String]].unbind("title", title) + "/")
+}
+                                                        
+ 
 // @LINE:9
 def insert(id:String, content:String, title:String) = {
    Call("GET", "/insert/" + implicitly[PathBindable[String]].unbind("id", id) + "/" + implicitly[PathBindable[String]].unbind("content", content) + "/" + implicitly[PathBindable[String]].unbind("title", title) + "/")
@@ -55,12 +61,6 @@ def del(id:String, title:String) = {
 // @LINE:6
 def index() = {
    Call("GET", "/")
-}
-                                                        
- 
-// @LINE:10
-def Make(content:String) = {
-   Call("GET", "/Make/" + implicitly[PathBindable[String]].unbind("content", content))
 }
                                                         
  
@@ -134,6 +134,17 @@ def Change = JavascriptReverseRoute(
 )
                                                         
  
+// @LINE:10
+def Make = JavascriptReverseRoute(
+   "controllers.Application.Make",
+   """
+      function(content,title) {
+      return _wA({method:"GET", url:"/Make/" + (""" + implicitly[PathBindable[String]].javascriptUnbind + """)("content", content) + "/" + (""" + implicitly[PathBindable[String]].javascriptUnbind + """)("title", title) + "/"})
+      }
+   """
+)
+                                                        
+ 
 // @LINE:9
 def insert = JavascriptReverseRoute(
    "controllers.Application.insert",
@@ -162,17 +173,6 @@ def index = JavascriptReverseRoute(
    """
       function() {
       return _wA({method:"GET", url:"/"})
-      }
-   """
-)
-                                                        
- 
-// @LINE:10
-def Make = JavascriptReverseRoute(
-   "controllers.Application.Make",
-   """
-      function(content) {
-      return _wA({method:"GET", url:"/Make/" + (""" + implicitly[PathBindable[String]].javascriptUnbind + """)("content", content)})
       }
    """
 )
@@ -258,6 +258,12 @@ def Change(id:String, content:String, title:String) = new play.api.mvc.HandlerRe
 )
                               
  
+// @LINE:10
+def Make(content:String, title:String) = new play.api.mvc.HandlerRef(
+   controllers.Application.Make(content, title), HandlerDef(this, "controllers.Application", "Make", Seq(classOf[String], classOf[String]))
+)
+                              
+ 
 // @LINE:9
 def insert(id:String, content:String, title:String) = new play.api.mvc.HandlerRef(
    controllers.Application.insert(id, content, title), HandlerDef(this, "controllers.Application", "insert", Seq(classOf[String], classOf[String], classOf[String]))
@@ -273,12 +279,6 @@ def del(id:String, title:String) = new play.api.mvc.HandlerRef(
 // @LINE:6
 def index() = new play.api.mvc.HandlerRef(
    controllers.Application.index(), HandlerDef(this, "controllers.Application", "index", Seq())
-)
-                              
- 
-// @LINE:10
-def Make(content:String) = new play.api.mvc.HandlerRef(
-   controllers.Application.Make(content), HandlerDef(this, "controllers.Application", "Make", Seq(classOf[String]))
 )
                               
  
